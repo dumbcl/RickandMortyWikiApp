@@ -19,211 +19,261 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.currentCompositeKeyHash
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import data.Character
 import getPlatform
-import kotlinx.coroutines.flow.Flow
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import ui.LoadingStub
+import ui.NetworkStub
 import ui.Palette
 import ui.TwoPartedText
+import ui.getScreenModel
+import ui.main_screen.elements.ContentType
+import ui.main_screen.elements.MainScreen
 
-@OptIn(ExperimentalResourceApi::class)
-@Composable
-fun CharacterScreen(
-    uiState: CharacterState,
-    uiEvent: Flow<CharacterEvents>,
-    uiAction: (CharacterActions) -> Unit,
-) {
-    val platformName = getPlatform().name.split(" ")[0]
-    val isAndroid = platformName == "Android"
-    val horizontalPadding = if (isAndroid) 25.dp else 50.dp
-    val textSize = if (isAndroid) 20.sp else 30.sp
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Palette.BackgroundColor),
-        //contentAlignment = Alignment.TopCenter
+const val KEY_CHARACTER_SCREEN = "characterScreenKey"
+
+class CharacterScreen(id: Int) : Screen {
+
+    override val key: ScreenKey
+        get() = KEY_CHARACTER_SCREEN
+
+    @Composable
+    override fun Content() {
+        val navigator = LocalNavigator.currentOrThrow
+        val characterScreenModel = getScreenModel<CharacterScreenModel>()
+        val characterScreenState = characterScreenModel.state.collectAsState()
+
+        LaunchedEffect(currentCompositeKeyHash) {
+            characterScreenModel.fetchData()
+        }
+
+        when (val state = characterScreenState.value) {
+            is CharacterScreenState.Init -> CharacterScreenContent(null, false, true, navigator)
+            is CharacterScreenState.Loading -> CharacterScreenContent(null, false, true, navigator)
+            is CharacterScreenState.Error -> CharacterScreenContent(null, true, false, navigator)
+            is CharacterScreenState.CharacterContent -> CharacterScreenContent(
+                state.character,
+                false,
+                false,
+                navigator
+            )
+        }
+    }
+
+    @OptIn(ExperimentalResourceApi::class)
+    @Composable
+    fun CharacterScreenContent(
+        character: Character?,
+        isNetworkError: Boolean,
+        isLoading: Boolean,
+        navigator: Navigator,
     ) {
-        Column(
+        val platformName = getPlatform().name.split(" ")[0]
+        val isAndroid = platformName == "Android"
+        val horizontalPadding = if (isAndroid) 25.dp else 50.dp
+        val textSize = if (isAndroid) 20.sp else 30.sp
+        Box(
             modifier = Modifier
-                .padding(horizontalPadding, 15.dp)
-                .verticalScroll(rememberScrollState()),
+                .fillMaxSize()
+                .background(color = Palette.BackgroundColor),
+            //contentAlignment = Alignment.TopCenter
         ) {
-            Row (
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .padding(horizontalPadding, 15.dp)
+                    .verticalScroll(rememberScrollState()),
             ) {
-                IconButton(
-                    onClick = { /*TODO*/ },
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        Icons.Default.KeyboardArrowLeft,
-                        "go back",
-                        tint = Palette.GeneralTextColor,
-                        modifier = Modifier
-                            .width(48.dp)
-                            .height(48.dp),
+                    IconButton(
+                        onClick = { navigator.push(MainScreen(ContentType.CHARACTERS)) },
+                    ) {
+                        Icon(
+                            Icons.Default.KeyboardArrowLeft,
+                            "go back",
+                            tint = Palette.GeneralTextColor,
+                            modifier = Modifier
+                                .width(48.dp)
+                                .height(48.dp),
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(15.dp))
+                    Text(
+                        text = "Characters",
+                        color = Palette.GeneralTextColor,
+                        style = TextStyle(
+                            color = Palette.DetailsTextColor,
+                            fontSize = textSize.times(1.3),
+                            fontWeight = FontWeight(700),
+                        ),
                     )
                 }
-                Spacer(modifier = Modifier.width(15.dp))
-                Text(
-                    text = "Characters",
-                    color = Palette.GeneralTextColor,
-                    style = TextStyle(
-                        color = Palette.DetailsTextColor,
-                        fontSize = textSize.times(1.3),
-                        fontWeight = FontWeight(700),
-                    ),
-                )
-            }
-            Spacer(modifier = Modifier.height(15.dp))
-            Image(
-                painterResource("image_rick_and_morty_logo.xml"),
-                null
-            )
-            Spacer(modifier = Modifier.height(25.dp))
-            if (isAndroid) {
-                Image(
-                    painter = painterResource("img.png"),
-                    contentDescription = uiState.name,
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(200.dp)
-                )
                 Spacer(modifier = Modifier.height(15.dp))
-                TwoPartedText(
-                    "Name: ",
-                    uiState.name,
-                    textSize.unaryMinus().unaryMinus(),
-                    textSize
+                Image(
+                    painterResource("image_rick_and_morty_logo.xml"),
+                    null
                 )
-                Spacer(modifier = Modifier.height(10.dp))
-                TwoPartedText(
-                    "Status: ",
-                    uiState.status,
-                    textSize.unaryMinus().unaryMinus(),
-                    textSize
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                TwoPartedText(
-                    "Species: ",
-                    uiState.species,
-                    textSize.unaryMinus().unaryMinus(),
-                    textSize
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                TwoPartedText(
-                    "Gender: ",
-                    uiState.gender,
-                    textSize.unaryMinus().unaryMinus(),
-                    textSize
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                TwoPartedText(
-                    "Origin: ",
-                    uiState.origin.name,
-                    textSize.unaryMinus().unaryMinus(),
-                    textSize,
-                    secondColor = Palette.DetailsTextColor,
-                    isClickable = true,
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                TwoPartedText(
-                    "Location: ",
-                    uiState.location.name,
-                    textSize.unaryMinus().unaryMinus(),
-                    textSize,
-                    secondColor = Palette.DetailsTextColor,
-                    isClickable = true,
-                )
-            } else {
-                Row {
-                    Image(
-                        painter = painterResource("img.png"),
-                        contentDescription = uiState.name,
-                        modifier = Modifier
-                            .width(250.dp)
-                            .height(250.dp)
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Column {
+                Spacer(modifier = Modifier.height(25.dp))
+                if (isLoading) {
+                    LoadingStub()
+                } else if (isNetworkError) {
+                    NetworkStub()
+                } else {
+                    if (isAndroid) {
+                        Image(
+                            painter = painterResource("img.png"),
+                            contentDescription = character?.name,
+                            modifier = Modifier
+                                .width(200.dp)
+                                .height(200.dp)
+                        )
+                        Spacer(modifier = Modifier.height(15.dp))
                         TwoPartedText(
                             "Name: ",
-                            uiState.name,
+                            character!!.name,
                             textSize.unaryMinus().unaryMinus(),
                             textSize
                         )
-                        Spacer(modifier = Modifier.height(5.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                         TwoPartedText(
                             "Status: ",
-                            uiState.status,
+                            character.status,
                             textSize.unaryMinus().unaryMinus(),
                             textSize
                         )
-                        Spacer(modifier = Modifier.height(5.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                         TwoPartedText(
                             "Species: ",
-                            uiState.species,
+                            character.species,
                             textSize.unaryMinus().unaryMinus(),
                             textSize
                         )
-                        Spacer(modifier = Modifier.height(5.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                         TwoPartedText(
                             "Gender: ",
-                            uiState.gender,
+                            character.gender ?: "Unknown",
                             textSize.unaryMinus().unaryMinus(),
                             textSize
                         )
-                        Spacer(modifier = Modifier.height(5.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                         TwoPartedText(
                             "Origin: ",
-                            uiState.origin.name,
+                            character.origin.name,
                             textSize.unaryMinus().unaryMinus(),
                             textSize,
                             secondColor = Palette.DetailsTextColor,
                             isClickable = true,
                         )
-                        Spacer(modifier = Modifier.height(5.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                         TwoPartedText(
                             "Location: ",
-                            uiState.location.name,
+                            character.location.name,
                             textSize.unaryMinus().unaryMinus(),
                             textSize,
                             secondColor = Palette.DetailsTextColor,
                             isClickable = true,
+                        )
+                    } else {
+                        Row {
+                            Image(
+                                painter = painterResource("img.png"),
+                                contentDescription = character?.name,
+                                modifier = Modifier
+                                    .width(250.dp)
+                                    .height(250.dp)
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column {
+                                TwoPartedText(
+                                    "Name: ",
+                                    character!!.name,
+                                    textSize.unaryMinus().unaryMinus(),
+                                    textSize
+                                )
+                                Spacer(modifier = Modifier.height(5.dp))
+                                TwoPartedText(
+                                    "Status: ",
+                                    character.status,
+                                    textSize.unaryMinus().unaryMinus(),
+                                    textSize
+                                )
+                                Spacer(modifier = Modifier.height(5.dp))
+                                TwoPartedText(
+                                    "Species: ",
+                                    character.species,
+                                    textSize.unaryMinus().unaryMinus(),
+                                    textSize
+                                )
+                                Spacer(modifier = Modifier.height(5.dp))
+                                TwoPartedText(
+                                    "Gender: ",
+                                    character.gender ?: "Unknown",
+                                    textSize.unaryMinus().unaryMinus(),
+                                    textSize
+                                )
+                                Spacer(modifier = Modifier.height(5.dp))
+                                TwoPartedText(
+                                    "Origin: ",
+                                    character.origin.name,
+                                    textSize.unaryMinus().unaryMinus(),
+                                    textSize,
+                                    secondColor = Palette.DetailsTextColor,
+                                    isClickable = true,
+                                )
+                                Spacer(modifier = Modifier.height(5.dp))
+                                TwoPartedText(
+                                    "Location: ",
+                                    character.location.name,
+                                    textSize.unaryMinus().unaryMinus(),
+                                    textSize,
+                                    secondColor = Palette.DetailsTextColor,
+                                    isClickable = true,
+                                )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Episodes:",
+                        color = Palette.GeneralTextColor,
+                        style = TextStyle(
+                            color = Palette.GeneralTextColor,
+                            fontSize = textSize,
+                            fontWeight = FontWeight(700),
+                        ),
+                    )
+                    for (episode in character!!.episodes) {
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text(
+                            text = episode,
+                            color = Palette.DetailsTextColor,
+                            style = TextStyle(
+                                color = Palette.DetailsTextColor,
+                                fontSize = textSize,
+                                fontWeight = FontWeight(500),
+                            ),
+                            modifier = Modifier.clickable { }
                         )
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "Episodes:",
-                color = Palette.GeneralTextColor,
-                style = TextStyle(
-                    color = Palette.GeneralTextColor,
-                    fontSize = textSize,
-                    fontWeight = FontWeight(700),
-                ),
-            )
-            for (episode in uiState.episodes) {
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = episode.code,
-                    color = Palette.DetailsTextColor,
-                    style = TextStyle(
-                        color = Palette.DetailsTextColor,
-                        fontSize = textSize,
-                        fontWeight = FontWeight(500),
-                    ),
-                    modifier = Modifier.clickable { }
-                )
-            }
         }
     }
+
 }

@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
 }
 
+@OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     androidTarget {
         compilations.all {
@@ -35,6 +36,19 @@ kotlin {
             implementation(compose.material)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+
+            implementation("cafe.adriel.voyager:voyager-navigator:1.0.0-rc07")
+            implementation("cafe.adriel.voyager:voyager-bottom-sheet-navigator:1.0.0-rc07")
+            implementation("cafe.adriel.voyager:voyager-tab-navigator:1.0.0-rc07")
+            implementation("cafe.adriel.voyager:voyager-transitions:1.0.0-rc07")
+            implementation("cafe.adriel.voyager:voyager-koin:1.0.0-rc10")
+
+            implementation("io.insert-koin:koin-core:3.4.3")
+            implementation("io.insert-koin:koin-compose:1.0.4")
+
+            implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:0.30.1")
+            implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:0.30.1")
+
         }
     }
 }

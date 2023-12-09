@@ -19,114 +19,168 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.currentCompositeKeyHash
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import data.Location
 import getPlatform
-import kotlinx.coroutines.flow.Flow
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import ui.LoadingStub
+import ui.NetworkStub
 import ui.Palette
 import ui.TwoPartedText
-import ui.episode_screen.EpisodeActions
-import ui.episode_screen.EpisodeEvents
-import ui.episode_screen.EpisodeState
+import ui.getScreenModel
+import ui.main_screen.elements.ContentType
+import ui.main_screen.elements.MainScreen
 
-@OptIn(ExperimentalResourceApi::class)
-@Composable
-fun LocationScreen(
-    uiState: LocationState,
-    uiEvent: Flow<LocationEvents>,
-    uiAction: (LocationActions) -> Unit,
-) {
-    val platformName = getPlatform().name.split(" ")[0]
-    val isAndroid = platformName == "Android"
-    val horizontalPadding = if (isAndroid) 25.dp else 50.dp
-    val textSize = if (isAndroid) 20.sp else 30.sp
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Palette.BackgroundColor),
-        //contentAlignment = Alignment.TopCenter
+const val KEY_LOCATION_SCREEN = "locationScreenKey"
+
+class LocationScreen(id: String) : Screen {
+
+    override val key: ScreenKey
+        get() = KEY_LOCATION_SCREEN
+
+    @Composable
+    override fun Content() {
+        val navigator = LocalNavigator.currentOrThrow
+        val locationScreenModel = getScreenModel<LocationScreenModel>()
+        val locationScreenState = locationScreenModel.state.collectAsState()
+
+        LaunchedEffect(currentCompositeKeyHash) {
+            locationScreenModel.fetchData()
+        }
+
+        when (val state = locationScreenState.value) {
+            is LocationScreenState.Init -> LocationScreenContent(null, false, true, navigator)
+            is LocationScreenState.Loading -> LocationScreenContent(null, false, true, navigator)
+            is LocationScreenState.Error -> LocationScreenContent(null, true, false, navigator)
+            is LocationScreenState.LocationContent -> LocationScreenContent(
+                state.location,
+                false,
+                false,
+                navigator
+            )
+        }
+    }
+
+    @OptIn(ExperimentalResourceApi::class)
+    @Composable
+    fun LocationScreenContent(
+        location: Location?,
+        isNetworkError: Boolean,
+        isLoading: Boolean,
+        navigator: Navigator,
     ) {
-        Column(
+        val platformName = getPlatform().name.split(" ")[0]
+        val isAndroid = platformName == "Android"
+        val horizontalPadding = if (isAndroid) 25.dp else 50.dp
+        val textSize = if (isAndroid) 20.sp else 30.sp
+        Box(
             modifier = Modifier
-                .padding(horizontalPadding, 15.dp)
-                .verticalScroll(rememberScrollState()),
+                .fillMaxSize()
+                .background(color = Palette.BackgroundColor),
+            //contentAlignment = Alignment.TopCenter
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .padding(horizontalPadding, 15.dp)
+                    .verticalScroll(rememberScrollState()),
             ) {
-                IconButton(
-                    onClick = { /*TODO*/ },
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        Icons.Default.KeyboardArrowLeft,
-                        "go back",
-                        tint = Palette.GeneralTextColor,
-                        modifier = Modifier
-                            .width(48.dp)
-                            .height(48.dp),
+                    IconButton(
+                        onClick = { navigator.push(MainScreen(ContentType.LOCATIONS)) },
+                    ) {
+                        Icon(
+                            Icons.Default.KeyboardArrowLeft,
+                            "go back",
+                            tint = Palette.GeneralTextColor,
+                            modifier = Modifier
+                                .width(48.dp)
+                                .height(48.dp),
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(15.dp))
+                    Text(
+                        text = "Locations",
+                        color = Palette.GeneralTextColor,
+                        style = TextStyle(
+                            color = Palette.DetailsTextColor,
+                            fontSize = textSize.times(1.3),
+                            fontWeight = FontWeight(700),
+                        ),
                     )
                 }
-                Spacer(modifier = Modifier.width(15.dp))
-                Text(
-                    text = "Locations",
-                    color = Palette.GeneralTextColor,
-                    style = TextStyle(
-                        color = Palette.DetailsTextColor,
-                        fontSize = textSize.times(1.3),
-                        fontWeight = FontWeight(700),
-                    ),
-                )
-            }
-            Spacer(modifier = Modifier.height(15.dp))
-            Image(
-                painterResource("image_rick_and_morty_logo.xml"),
-                null
-            )
-            Spacer(modifier = Modifier.height(25.dp))
-            TwoPartedText("Name: ", uiState.name, textSize.unaryMinus().unaryMinus(), textSize)
-            Spacer(modifier = Modifier.height(10.dp))
-            TwoPartedText(
-                "Type: ",
-                uiState.type,
-                textSize.unaryMinus().unaryMinus(),
-                textSize
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            TwoPartedText(
-                "Dimension: ",
-                uiState.dimension,
-                textSize.unaryMinus().unaryMinus(),
-                textSize
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "Residents: ",
-                color = Palette.GeneralTextColor,
-                style = TextStyle(
-                    color = Palette.GeneralTextColor,
-                    fontSize = textSize,
-                    fontWeight = FontWeight(700),
-                ),
-            )
-            for (character in uiState.residents) {
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = character.name,
-                    color = Palette.DetailsTextColor,
-                    style = TextStyle(
-                        color = Palette.DetailsTextColor,
-                        fontSize = textSize,
-                        fontWeight = FontWeight(500),
-                    ),
-                    modifier = Modifier.clickable { }
-                )
+                if (isLoading) {
+                    LoadingStub()
+                } else if (isNetworkError) {
+                    NetworkStub()
+                } else {
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Image(
+                        painterResource("image_rick_and_morty_logo.xml"),
+                        null
+                    )
+                    Spacer(modifier = Modifier.height(25.dp))
+                    TwoPartedText(
+                        "Name: ",
+                        location!!.name,
+                        textSize.unaryMinus().unaryMinus(),
+                        textSize
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    TwoPartedText(
+                        "Type: ",
+                        location.type,
+                        textSize.unaryMinus().unaryMinus(),
+                        textSize
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    TwoPartedText(
+                        "Dimension: ",
+                        location.dimension ?: "haha",
+                        textSize.unaryMinus().unaryMinus(),
+                        textSize
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Residents: ",
+                        color = Palette.GeneralTextColor,
+                        style = TextStyle(
+                            color = Palette.GeneralTextColor,
+                            fontSize = textSize,
+                            fontWeight = FontWeight(700),
+                        ),
+                    )
+                    for (character in location.residents) {
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text(
+                            text = character,
+                            color = Palette.DetailsTextColor,
+                            style = TextStyle(
+                                color = Palette.DetailsTextColor,
+                                fontSize = textSize,
+                                fontWeight = FontWeight(500),
+                            ),
+                            modifier = Modifier.clickable { }
+                        )
+                    }
+                }
             }
         }
     }
+
 }

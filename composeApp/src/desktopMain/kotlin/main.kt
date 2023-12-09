@@ -1,16 +1,16 @@
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
+import di.initKoin
+import org.koin.core.context.startKoin
 
+//lateinit var koin: Koin
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
-        App()
-    }
-}
-
-@Preview
-@Composable
-fun AppDesktopPreview() {
-    App()
+    initKoin {}
+    Window(
+        title = "Rick and Morty Wiki",
+        state = rememberWindowState(width = 1400.dp, height = 800.dp),
+        onCloseRequest = ::exitApplication,
+    ) { App() }
 }
