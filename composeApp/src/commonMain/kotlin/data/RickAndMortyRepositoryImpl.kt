@@ -30,17 +30,7 @@ class RickAndMortyRepositoryImpl(
             e.printStackTrace()
             emit(ApiResultState.OnFailure(e.message ?: "Failed to load characters"))
         }
-    }.flowOn(Dispatchers.Default)
-
-//    override suspend fun loadCharacters(): ApiResultState{
-//        return try {
-//            val result = apiRepository.getCharactersData()
-//            ApiResultState.OnSuccess(result)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            ApiResultState.OnFailure(e.message ?: "Failed to load characters")
-//        }
-//    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun loadLocations() = flow {
         try {
@@ -51,7 +41,7 @@ class RickAndMortyRepositoryImpl(
             e.printStackTrace()
             emit(ApiResultState.OnFailure(e.message ?: "Failed to load locations"))
         }
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun loadEpisodes() = flow {
         try {
@@ -62,7 +52,7 @@ class RickAndMortyRepositoryImpl(
             e.printStackTrace()
             emit(ApiResultState.OnFailure(e.message ?: "Failed to load episodes"))
         }
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(Dispatchers.IO)
 
     override fun getCharacters(): List<Character> = characters
 

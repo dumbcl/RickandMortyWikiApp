@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -37,6 +38,7 @@ import data.Location
 import getPlatform
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import ui.ErrorStub
 import ui.LoadingStub
 import ui.NetworkStub
 import ui.Palette
@@ -47,7 +49,7 @@ import ui.main_screen.elements.MainScreen
 
 const val KEY_LOCATION_SCREEN = "locationScreenKey"
 
-class LocationScreen(id: String) : Screen {
+class LocationScreen(val id: Int) : Screen {
 
     override val key: ScreenKey
         get() = KEY_LOCATION_SCREEN
@@ -56,6 +58,7 @@ class LocationScreen(id: String) : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val locationScreenModel = getScreenModel<LocationScreenModel>()
+        locationScreenModel.id = id
         val locationScreenState = locationScreenModel.state.collectAsState()
 
         LaunchedEffect(currentCompositeKeyHash) {
@@ -127,7 +130,12 @@ class LocationScreen(id: String) : Screen {
                 if (isLoading) {
                     LoadingStub()
                 } else if (isNetworkError) {
-                    NetworkStub()
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        ErrorStub()
+                    }
                 } else {
                     Spacer(modifier = Modifier.height(15.dp))
                     Image(

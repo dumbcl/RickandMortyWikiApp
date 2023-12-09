@@ -24,8 +24,8 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
 
 val viewModelsModule = module {
     factory { MainScreenModel(repository = get()) }
-    factory { CharacterScreenModel() }
-    factory { EpisodeScreenModel() }
+    factory { CharacterScreenModel(repository = get()) }
+    factory { EpisodeScreenModel(repository = get()) }
     //factory { LocationScreenModel() }
 }
 

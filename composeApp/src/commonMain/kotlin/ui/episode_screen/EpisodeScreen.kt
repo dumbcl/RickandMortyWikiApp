@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -37,6 +38,7 @@ import data.Episode
 import getPlatform
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import ui.ErrorStub
 import ui.LoadingStub
 import ui.NetworkStub
 import ui.Palette
@@ -47,7 +49,7 @@ import ui.main_screen.elements.MainScreen
 
 const val KEY_EPISODE_SCREEN = "episodeScreenKey"
 
-class EpisodeScreen(id: String) : Screen {
+class EpisodeScreen(val id: Int) : Screen {
     override val key: ScreenKey
         get() = KEY_EPISODE_SCREEN
 
@@ -55,6 +57,7 @@ class EpisodeScreen(id: String) : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val episodeScreenModel = getScreenModel<EpisodeScreenModel>()
+        episodeScreenModel.id = id
         val episodeScreenState = episodeScreenModel.state.collectAsState()
 
         LaunchedEffect(currentCompositeKeyHash) {
@@ -131,7 +134,12 @@ class EpisodeScreen(id: String) : Screen {
                 if (isLoading) {
                     LoadingStub()
                 } else if (isNetworkError) {
-                    NetworkStub()
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        ErrorStub()
+                    }
                 } else {
                     Spacer(modifier = Modifier.height(25.dp))
                     TwoPartedText(

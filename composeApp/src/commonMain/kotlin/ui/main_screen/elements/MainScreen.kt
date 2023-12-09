@@ -78,7 +78,9 @@ import ui.LoadingStub
 import ui.NetworkStub
 import ui.Palette
 import ui.character_screen.CharacterScreen
+import ui.episode_screen.EpisodeScreen
 import ui.getScreenModel
+import ui.location_screen.LocationScreen
 import ui.main_screen.MainScreenModel
 import ui.main_screen.MainScreenState
 
@@ -340,8 +342,12 @@ class MainScreen(val contentType: ContentType) : Screen {
                                 items(items = itemsOnScreen) { item ->
                                     when (item) {
                                         is Character -> UICharacterItem(name = item.name, species = item.species, image = item.image, onClick = { navigator.push(CharacterScreen(1)) })
-                                        is Location -> UILocationItem(name = item.name, type = item.type)
-                                        is Episode -> UIEpisodeItem(name = item.name, date = item.airDate, code = item.code)
+                                        is Location -> UILocationItem(name = item.name, type = item.type, onClick = { navigator.push(
+                                            LocationScreen(1)
+                                        ) })
+                                        is Episode -> UIEpisodeItem(name = item.name, date = item.airDate, code = item.code, onClick = { navigator.push(
+                                            EpisodeScreen(1)
+                                        ) })
                                     }
                                 }
                                 item{LoadMoreButton()}
@@ -355,8 +361,8 @@ class MainScreen(val contentType: ContentType) : Screen {
                                 items(items = itemsOnScreen) { item ->
                                     when (item) {
                                         is Character -> UICharacterItem(name = item.name, species = item.species, image = item.image, onClick = { navigator.push(CharacterScreen(1)) })
-                                        is Location -> UILocationItem(name = item.name, type = item.type)
-                                        is Episode -> UIEpisodeItem(name = item.name, date = item.airDate, code = item.code)
+                                        is Location -> UILocationItem(name = item.name, type = item.type, onClick = { navigator.push(LocationScreen(1)) })
+                                        is Episode -> UIEpisodeItem(name = item.name, date = item.airDate, code = item.code, onClick = { navigator.push(EpisodeScreen(1)) })
                                     }
                                 }
                                 item{LoadMoreButton()}

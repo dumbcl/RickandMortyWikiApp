@@ -3,6 +3,7 @@ package ui.main_screen.elements
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +29,7 @@ import ui.Palette
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun UIEpisodeItem(name: String, date: String, code: String){
+fun UIEpisodeItem(name: String, date: String, code: String, onClick: () -> Unit){
     Box(
         modifier = Modifier
             .padding(3.dp)
@@ -36,7 +37,8 @@ fun UIEpisodeItem(name: String, date: String, code: String){
             .height(170.dp)
             .background(color = Palette.PrimaryCardsColor, shape = RoundedCornerShape(size = 15.dp))
             .border(width = 3.dp, color = Palette.DetailsTextColor, shape = RoundedCornerShape(size = 15.dp))
-            .shadow(elevation = 4.dp, spotColor = Color(0x40000000), ambientColor = Color(0x40000000)),
+            .shadow(elevation = 4.dp, spotColor = Color(0x40000000), ambientColor = Color(0x40000000))
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ){
         Column (

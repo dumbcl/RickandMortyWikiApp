@@ -46,8 +46,11 @@ kotlin {
             implementation("io.insert-koin:koin-core:3.4.3")
             implementation("io.insert-koin:koin-compose:1.0.4")
 
-            implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:0.30.1")
-            implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:0.30.1")
+            implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+            implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.7.3")
+            implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3")
+            implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
 
         }
     }

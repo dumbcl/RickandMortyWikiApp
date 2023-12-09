@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -37,6 +38,7 @@ import data.Character
 import getPlatform
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import ui.ErrorStub
 import ui.LoadingStub
 import ui.NetworkStub
 import ui.Palette
@@ -47,7 +49,7 @@ import ui.main_screen.elements.MainScreen
 
 const val KEY_CHARACTER_SCREEN = "characterScreenKey"
 
-class CharacterScreen(id: Int) : Screen {
+class CharacterScreen(val id: Int) : Screen {
 
     override val key: ScreenKey
         get() = KEY_CHARACTER_SCREEN
@@ -56,6 +58,7 @@ class CharacterScreen(id: Int) : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val characterScreenModel = getScreenModel<CharacterScreenModel>()
+        characterScreenModel.id = id
         val characterScreenState = characterScreenModel.state.collectAsState()
 
         LaunchedEffect(currentCompositeKeyHash) {
@@ -133,7 +136,12 @@ class CharacterScreen(id: Int) : Screen {
                 if (isLoading) {
                     LoadingStub()
                 } else if (isNetworkError) {
-                    NetworkStub()
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        ErrorStub()
+                    }
                 } else {
                     if (isAndroid) {
                         Image(

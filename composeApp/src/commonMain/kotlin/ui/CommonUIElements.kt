@@ -93,6 +93,21 @@ fun NetworkStub() {
 }
 
 @Composable
+fun ErrorStub() {
+    Spacer(modifier = Modifier.height(40.dp))
+    Text(
+        text = "Something went wrong\nSorry...",
+        style = TextStyle(
+            fontSize = 32.sp,
+            fontWeight = FontWeight(700),
+            color = Palette.GeneralTextColor,
+            textAlign = TextAlign.Center,
+        )
+    )
+    Spacer(modifier = Modifier.height(10.dp))
+}
+
+@Composable
 fun LoadingStub(){
     CircularProgressIndicator(
         color = Palette.GeneralTextColor
