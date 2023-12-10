@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -32,9 +33,9 @@ import ui.Palette
 fun UICharacterItem(name: String, species: String, image: String = "", onClick: () -> Unit){
     Box(
         modifier = Modifier
-        .padding(3.dp)
-        .width(262.dp)
-        .height(250.dp)
+        .padding(10.dp)
+        .width(290.dp)
+        .height(280.dp)
         .background(color = Palette.PrimaryCardsColor, shape = RoundedCornerShape(size = 15.dp))
         .border(width = 3.dp, color = Palette.DetailsTextColor, shape = RoundedCornerShape(size = 15.dp))
         .shadow(elevation = 4.dp, spotColor = Color(0x40000000), ambientColor = Color(0x40000000))
@@ -62,6 +63,7 @@ fun UICharacterItem(name: String, species: String, image: String = "", onClick: 
                     fontSize = 25.sp,
                     fontWeight = FontWeight(700),
                 ),
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(7.dp))
             Text(
@@ -72,6 +74,7 @@ fun UICharacterItem(name: String, species: String, image: String = "", onClick: 
                     fontSize = 20.sp,
                     fontWeight = FontWeight(500),
                 ),
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(15.dp))
         }

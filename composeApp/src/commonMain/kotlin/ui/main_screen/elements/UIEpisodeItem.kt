@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -32,8 +33,8 @@ import ui.Palette
 fun UIEpisodeItem(name: String, date: String, code: String, onClick: () -> Unit){
     Box(
         modifier = Modifier
-            .padding(3.dp)
-            .width(262.dp)
+            .padding(10.dp)
+            .width(290.dp)
             .height(170.dp)
             .background(color = Palette.PrimaryCardsColor, shape = RoundedCornerShape(size = 15.dp))
             .border(width = 3.dp, color = Palette.DetailsTextColor, shape = RoundedCornerShape(size = 15.dp))
@@ -52,6 +53,7 @@ fun UIEpisodeItem(name: String, date: String, code: String, onClick: () -> Unit)
                     fontSize = 25.sp,
                     fontWeight = FontWeight(700),
                 ),
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
@@ -62,6 +64,7 @@ fun UIEpisodeItem(name: String, date: String, code: String, onClick: () -> Unit)
                     fontSize = 20.sp,
                     fontWeight = FontWeight(500),
                 ),
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
@@ -72,8 +75,10 @@ fun UIEpisodeItem(name: String, date: String, code: String, onClick: () -> Unit)
                     fontSize = 20.sp,
                     fontWeight = FontWeight(700),
                 ),
+                textAlign = TextAlign.Center
             )
         }
     }
+    Spacer(modifier = Modifier.height(30.dp))
 }
 

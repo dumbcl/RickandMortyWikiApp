@@ -366,7 +366,23 @@ class MainScreen(val contentType: ContentType) : Screen {
                                         ) })
                                     }
                                 }
-                                if (isLoadMoreVisible) item{LoadMoreButton({ mainScreenModel.loadMoreCharacters() })}
+                                if (isLoadMoreVisible) item{LoadMoreButton {
+                                    when (contentType) {
+                                        ContentType.CHARACTERS -> {
+                                            mainScreenModel.loadMoreCharacters()
+                                        }
+                                        ContentType.DEFAULT -> {
+                                            mainScreenModel.loadMoreCharacters()
+                                        }
+                                        ContentType.LOCATIONS -> {
+                                            mainScreenModel.loadMoreLocations()
+                                        }
+                                        ContentType.EPISODES -> {
+                                            mainScreenModel.loadMoreEpisodes()
+                                        }
+                                    }
+                                }
+                                }
                             }
                         } else {
                             LazyVerticalGrid(

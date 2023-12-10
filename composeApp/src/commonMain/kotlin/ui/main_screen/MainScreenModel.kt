@@ -194,6 +194,13 @@ class MainScreenModel(val repository: RickAndMortyRepository) :
                         false,
                         true,
                     )
+                } else {
+                    mutableState.value = MainScreenState.Characters(
+                        characters,
+                        false,
+                        false,
+                        isLoadMoreButtonVisible = false
+                    )
                 }
             }
         } else {
@@ -218,6 +225,13 @@ class MainScreenModel(val repository: RickAndMortyRepository) :
                         false,
                         true,
                     )
+                } else {
+                    mutableState.value = MainScreenState.Episodes(
+                        episodes,
+                        false,
+                        false,
+                        isLoadMoreButtonVisible = false
+                    )
                 }
             }
         } else {
@@ -241,6 +255,13 @@ class MainScreenModel(val repository: RickAndMortyRepository) :
                         listOf(),
                         false,
                         true,
+                    )
+                } else {
+                    mutableState.value = MainScreenState.Locations(
+                        locations,
+                        false,
+                        false,
+                        isLoadMoreButtonVisible = false
                     )
                 }
             }
@@ -269,10 +290,24 @@ class MainScreenModel(val repository: RickAndMortyRepository) :
 
     fun loadMoreLocations() {
         locationsOnScreen += 8
+        val locations = repository.getLocations()
+        mutableState.value = MainScreenState.Locations(
+            locations.take(locationsOnScreen),
+            false,
+            false,
+            isLoadMoreButtonVisible = locationsOnScreen < locations.size
+        )
     }
 
     fun loadMoreEpisodes() {
         episodesOnScreen += 8
+        val episodes = repository.getEpisodes()
+        mutableState.value = MainScreenState.Episodes(
+            episodes.take(episodesOnScreen),
+            false,
+            false,
+            isLoadMoreButtonVisible = episodesOnScreen < episodes.size
+        )
     }
 
 }
