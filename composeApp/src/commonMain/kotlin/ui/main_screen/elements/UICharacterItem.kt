@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,6 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.Palette
@@ -46,13 +50,30 @@ fun UICharacterItem(name: String, species: String, image: String = "", onClick: 
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(11.dp))
-            Image(
-                painter = painterResource("compose-multiplatform.xml"),
-                contentDescription = name,
+            val imageUrl = asyncPainterResource(data = image)
+            KamelImage(
+                resource = imageUrl,
+                contentDescription = null,
                 modifier = Modifier
                     .width(150.dp)
                     .height(150.dp)
-                    .clip(CircleShape)
+                    .clip(CircleShape),
+                onLoading = { progress ->
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        progress = progress,
+                        modifier = Modifier.size(150.dp),
+                    )
+                },
+                onFailure = {
+                    Image(
+                        painter = painterResource("default_img.png"),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .width(150.dp)
+                            .height(150.dp),
+                    )
+                },
             )
             Spacer(modifier = Modifier.height(7.dp))
             Text(

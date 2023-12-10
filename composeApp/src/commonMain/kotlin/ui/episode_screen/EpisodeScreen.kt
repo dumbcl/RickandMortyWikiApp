@@ -93,7 +93,7 @@ class EpisodeScreen(val id: Int) : Screen {
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = Palette.BackgroundColor),
-            //contentAlignment = Alignment.TopCenter
+            contentAlignment = Alignment.TopCenter
         ) {
             Column(
                 modifier = Modifier

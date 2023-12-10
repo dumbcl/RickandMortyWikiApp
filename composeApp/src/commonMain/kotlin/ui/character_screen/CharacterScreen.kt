@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -25,6 +27,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.currentCompositeKeyHash
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,6 +40,8 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import data.Character
 import getPlatform
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.ErrorStub
@@ -94,12 +100,13 @@ class CharacterScreen(val id: Int) : Screen {
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = Palette.BackgroundColor),
-            //contentAlignment = Alignment.TopCenter
+            contentAlignment = Alignment.TopCenter
         ) {
             Column(
                 modifier = Modifier
                     .padding(horizontalPadding, 15.dp)
                     .verticalScroll(rememberScrollState()),
+                //horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -144,13 +151,32 @@ class CharacterScreen(val id: Int) : Screen {
                     }
                 } else {
                     if (isAndroid) {
-                        Image(
-                            painter = painterResource("img.png"),
-                            contentDescription = character?.name,
-                            modifier = Modifier
-                                .width(200.dp)
-                                .height(200.dp)
-                        )
+                        val imageUrl = character?.image?.let { asyncPainterResource(data = it) }
+                        if (imageUrl != null) {
+                            KamelImage(
+                                resource = imageUrl,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .width(200.dp)
+                                    .height(200.dp),
+                                onLoading = { progress ->
+                                    CircularProgressIndicator(
+                                        color = Color.White,
+                                        progress = progress,
+                                        modifier = Modifier.size(200.dp),
+                                    )
+                                },
+                                onFailure = {
+                                    Image(
+                                        painter = painterResource("default_img.png"),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .width(200.dp)
+                                            .height(200.dp),
+                                    )
+                                },
+                            )
+                        }
                         Spacer(modifier = Modifier.height(15.dp))
                         TwoPartedText(
                             "Name: ",
@@ -199,13 +225,32 @@ class CharacterScreen(val id: Int) : Screen {
                         )
                     } else {
                         Row {
-                            Image(
-                                painter = painterResource("img.png"),
-                                contentDescription = character?.name,
-                                modifier = Modifier
-                                    .width(250.dp)
-                                    .height(250.dp)
-                            )
+                            val imageUrl = character?.image?.let { asyncPainterResource(data = it) }
+                            if (imageUrl != null) {
+                                KamelImage(
+                                    resource = imageUrl,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .width(200.dp)
+                                        .height(200.dp),
+                                    onLoading = { progress ->
+                                        CircularProgressIndicator(
+                                            color = Color.White,
+                                            progress = progress,
+                                            modifier = Modifier.size(200.dp),
+                                        )
+                                    },
+                                    onFailure = {
+                                        Image(
+                                            painter = painterResource("default_img.png"),
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .width(200.dp)
+                                                .height(200.dp),
+                                        )
+                                    },
+                                )
+                            }
                             Spacer(modifier = Modifier.width(10.dp))
                             Column {
                                 TwoPartedText(

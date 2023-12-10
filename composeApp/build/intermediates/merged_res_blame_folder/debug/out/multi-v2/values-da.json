@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "org.example.project.composeApp-mergeDebugResources-41:/values-da/values-da.xml",
+            "outputFile": "org.example.project.composeApp-mergeDebugResources-42:/values-da/values-da.xml",
             "map": [
                 {
                     "source": "/Users/dumbcl/.gradle/caches/transforms-3/508b3234cf2a89b2b9a1cac25b8bdce2/transformed/ui-release/res/values-da/values-da.xml",

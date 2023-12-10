@@ -349,12 +349,12 @@ class MainScreen(val contentType: ContentType) : Screen {
                             ) {
                                 items(items = itemsOnScreen) { item ->
                                     when (item) {
-                                        is Character -> UICharacterItem(name = item.name, species = item.species, image = item.image, onClick = { navigator.push(CharacterScreen(1)) })
+                                        is Character -> UICharacterItem(name = item.name, species = item.species, image = item.image, onClick = { navigator.push(CharacterScreen(item.id)) })
                                         is Location -> UILocationItem(name = item.name, type = item.type, onClick = { navigator.push(
-                                            LocationScreen(1)
+                                            LocationScreen(item.id)
                                         ) })
                                         is Episode -> UIEpisodeItem(name = item.name, date = item.airDate, code = item.code, onClick = { navigator.push(
-                                            EpisodeScreen(1)
+                                            EpisodeScreen(item.id)
                                         ) })
                                     }
                                 }

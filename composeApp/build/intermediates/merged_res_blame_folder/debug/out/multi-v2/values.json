@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "org.example.project.composeApp-mergeDebugResources-41:/values/values.xml",
+            "outputFile": "org.example.project.composeApp-mergeDebugResources-42:/values/values.xml",
             "map": [
                 {
                     "source": "/Users/dumbcl/.gradle/caches/transforms-3/1e385999a024e21c22863c05d60a9a70/transformed/customview-poolingcontainer-1.0.0/res/values/values.xml",
@@ -35,6 +35,23 @@
                         "startOffsets": "5607",
                         "endColumns": "42",
                         "endOffsets": "5645"
+                    }
+                },
+                {
+                    "source": "/Users/dumbcl/.gradle/caches/transforms-3/1352a98cbb4d87b59b06e7cdc607ed61/transformed/androidsvg-aar-1.4/res/values/values.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "141",
+                        "endOffsets": "192"
+                    },
+                    "to": {
+                        "startLines": "257",
+                        "startColumns": "4",
+                        "startOffsets": "12701",
+                        "endColumns": "141",
+                        "endOffsets": "12838"
                     }
                 },
                 {

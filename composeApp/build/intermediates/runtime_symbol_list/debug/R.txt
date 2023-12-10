@@ -1,4 +1,5 @@
 int attr alpha 0x7f010000
+int attr css 0x7f010011
 int attr font 0x7f010001
 int attr fontProviderAuthority 0x7f010002
 int attr fontProviderCerts 0x7f010003
@@ -14,6 +15,7 @@ int attr lStar 0x7f01000c
 int attr nestedScrollViewStyle 0x7f01000d
 int attr queryPatterns 0x7f01000e
 int attr shortcutMatchRequired 0x7f01000f
+int attr svg 0x7f010012
 int attr ttcIndex 0x7f010010
 int color androidx_core_ripple_material_light 0x7f020000
 int color androidx_core_secondary_text_default_material_light 0x7f020001
@@ -241,3 +243,6 @@ int styleable GradientColor_android_endY 11
 int[] styleable GradientColorItem { 0x010101a5, 0x01010514 }
 int styleable GradientColorItem_android_color 0
 int styleable GradientColorItem_android_offset 1
+int[] styleable SVGImageView { 0x7f010011, 0x7f010012 }
+int styleable SVGImageView_css 0
+int styleable SVGImageView_svg 1

@@ -1,5 +1,6 @@
 org.example.project
 attr alpha
+attr css
 attr font
 attr fontProviderAuthority
 attr fontProviderCerts
@@ -15,6 +16,7 @@ attr lStar
 attr nestedScrollViewStyle
 attr queryPatterns
 attr shortcutMatchRequired
+attr svg
 attr ttcIndex
 color androidx_core_ripple_material_light
 color androidx_core_secondary_text_default_material_light
@@ -204,3 +206,4 @@ styleable FontFamily fontProviderAuthority fontProviderCerts fontProviderFetchSt
 styleable FontFamilyFont android_font android_fontWeight android_fontStyle android_ttcIndex android_fontVariationSettings font fontStyle fontVariationSettings fontWeight ttcIndex
 styleable GradientColor android_startColor android_endColor android_type android_centerX android_centerY android_gradientRadius android_tileMode android_centerColor android_startX android_startY android_endX android_endY
 styleable GradientColorItem android_color android_offset
+styleable SVGImageView css svg

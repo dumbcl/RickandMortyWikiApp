@@ -58,6 +58,8 @@ kotlin {
             implementation("io.ktor:ktor-client-logging:2.3.2")
             implementation("io.ktor:ktor-client-okhttp:2.3.2")
 
+            implementation("media.kamel:kamel-image:0.9.0")
+
         }
     }
 }

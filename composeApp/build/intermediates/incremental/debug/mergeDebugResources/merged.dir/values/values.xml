@@ -255,4 +255,5 @@
         
         <attr name="android:color"/>
     </declare-styleable>
+    <declare-styleable name="SVGImageView"><attr format="reference|string" name="svg"/><attr format="string" name="css"/></declare-styleable>
 </resources>
