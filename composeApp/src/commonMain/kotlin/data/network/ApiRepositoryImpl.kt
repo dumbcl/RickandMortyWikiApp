@@ -9,7 +9,7 @@ import java.lang.IllegalArgumentException
 class ApiRepositoryImpl: ApiRepository {
     override suspend fun getCharactersData(): List<Character> {
         return (listOf(Character(
-            id = 8886,
+            id = 1,
             name = "Darrell Bradley",
             status = "postea",
             species = "epicurei",
@@ -26,13 +26,33 @@ class ApiRepositoryImpl: ApiRepository {
             image = "audire",
             episodes = listOf(),
             url = null
-        )))
+        ),
+            Character(
+                id = 2153,
+                name = "Kim Knowles",
+                status = "veri",
+                species = "latine",
+                type = "fastidii",
+                gender = null,
+                origin = SimpleLocation(
+                    name = "Guadalupe McPherson",
+                    url = "https://www.google.com/#q=fabellas"
+                ),
+                location = SimpleLocation(
+                    name = "Allan Molina",
+                    url = "http://www.bing.com/search?q=prodesset"
+                ),
+                image = "habemus",
+                episodes = listOf(),
+                url = null
+            )
+        ))
         //TODO("Not yet implemented")
     }
 
     override suspend fun getLocationsData(): List<Location> {
         return (listOf(Location(
-            id = 7645,
+            id = 1,
             name = "Tisha Hawkins",
             type = "pulvinar",
             dimension = null,
@@ -43,7 +63,7 @@ class ApiRepositoryImpl: ApiRepository {
 
     override suspend fun getEpisodesData(): List<Episode> {
         return (listOf(Episode(
-            id = 2397,
+            id = 1,
             name = "Reynaldo Lloyd",
             airDate = "consectetuer",
             code = "vix",

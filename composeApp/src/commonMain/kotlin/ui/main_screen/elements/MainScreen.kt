@@ -113,6 +113,7 @@ class MainScreen(val contentType: ContentType) : Screen {
                 isNetworkError = false,
                 isSearchEmpty = false,
                 isLoading = true,
+                isLoadMoreVisible = true,
                 mainScreenModel,
                 navigator
             )
@@ -123,6 +124,7 @@ class MainScreen(val contentType: ContentType) : Screen {
                 isNetworkError = state.isNetworkError,
                 isSearchEmpty = state.isSearchEmpty,
                 isLoading = state.isLoading,
+                isLoadMoreVisible = state.isLoadMoreButtonVisible,
                 mainScreenModel,
                 navigator
             )
@@ -133,6 +135,7 @@ class MainScreen(val contentType: ContentType) : Screen {
                 isNetworkError = state.isNetworkError,
                 isSearchEmpty = state.isSearchEmpty,
                 isLoading = state.isLoading,
+                isLoadMoreVisible = state.isLoadMoreButtonVisible,
                 mainScreenModel,
                 navigator
             )
@@ -143,6 +146,7 @@ class MainScreen(val contentType: ContentType) : Screen {
                 isNetworkError = state.isNetworkError,
                 isSearchEmpty = state.isSearchEmpty,
                 isLoading = state.isLoading,
+                isLoadMoreVisible = state.isLoadMoreButtonVisible,
                 mainScreenModel,
                 navigator
             )
@@ -156,6 +160,7 @@ class MainScreen(val contentType: ContentType) : Screen {
         isNetworkError: Boolean,
         isSearchEmpty: Boolean,
         isLoading: Boolean,
+        isLoadMoreVisible: Boolean,
         mainScreenModel: MainScreenModel,
         navigator: Navigator,
     ) {
@@ -309,7 +314,18 @@ class MainScreen(val contentType: ContentType) : Screen {
                         ),
                         singleLine = true,
                         shape = RoundedCornerShape(10.dp),
-                        trailingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
+                        trailingIcon = { Icon(
+                            Icons.Default.Search,
+                            contentDescription = null,
+                            modifier = Modifier.clickable {
+                                when (contentType) {
+                                    ContentType.CHARACTERS -> mainScreenModel.searchCharacters(query)
+                                    ContentType.LOCATIONS -> mainScreenModel.searchLocations(query)
+                                    ContentType.EPISODES -> mainScreenModel.searchEpisodes(query)
+                                    ContentType.DEFAULT -> mainScreenModel.searchCharacters(query)
+                                }
+                            }
+                        ) }
                     )
 
                     if (isSearchEmpty) {
@@ -350,7 +366,7 @@ class MainScreen(val contentType: ContentType) : Screen {
                                         ) })
                                     }
                                 }
-                                item{LoadMoreButton()}
+                                if (isLoadMoreVisible) item{LoadMoreButton({ mainScreenModel.loadMoreCharacters() })}
                             }
                         } else {
                             LazyVerticalGrid(
@@ -365,7 +381,7 @@ class MainScreen(val contentType: ContentType) : Screen {
                                         is Episode -> UIEpisodeItem(name = item.name, date = item.airDate, code = item.code, onClick = { navigator.push(EpisodeScreen(1)) })
                                     }
                                 }
-                                item{LoadMoreButton()}
+                                if (isLoadMoreVisible) item{LoadMoreButton({ mainScreenModel.loadMoreCharacters() })}
                             }
                         }
 
@@ -391,10 +407,11 @@ class MainScreen(val contentType: ContentType) : Screen {
     }
 
     @Composable
-    fun LoadMoreButton(){
-        Spacer(modifier = Modifier.height(40.dp))
+    fun LoadMoreButton(
+        onClick: () -> Unit
+    ){
         TextButton(
-            onClick = {},
+            onClick = onClick,
             modifier = Modifier
                 .width(218.dp)
                 .height(81.dp)

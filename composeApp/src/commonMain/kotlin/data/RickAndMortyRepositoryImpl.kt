@@ -66,6 +66,12 @@ class RickAndMortyRepositoryImpl(
 
     override suspend fun getEpisode(id: Int): Episode? = episodes.firstOrNull { it.id == id }
 
+    override suspend fun getCharactersByName(name: String): List<Character> = characters.filter {it.name.startsWith(name, true)}
+
+    override suspend fun getLocationsByName(name: String): List<Location> = locations.filter {it.name.startsWith(name, true)}
+
+    override suspend fun getEpisodesByName(name: String): List<Episode> = episodes.filter {it.name.startsWith(name, true)}
+
     private fun setCharacters(loadedCharacters: List<Character>) {
         characters.addAll(loadedCharacters)
         updateCharactersFlow()

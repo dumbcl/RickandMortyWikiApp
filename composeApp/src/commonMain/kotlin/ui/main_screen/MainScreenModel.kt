@@ -9,11 +9,13 @@ import data.RickAndMortyRepository
 import data.network.ApiResultState
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 
 class MainScreenModel(val repository: RickAndMortyRepository) :
     StateScreenModel<MainScreenState>(MainScreenState.Init) {
+    var charactersOnScreen = 1
+    var locationsOnScreen = 1
+    var episodesOnScreen = 1
 
     suspend fun fetchCharactersData() {
         repository.loadCharacters().onStart {
@@ -36,10 +38,11 @@ class MainScreenModel(val repository: RickAndMortyRepository) :
                 when (it) {
                     is ApiResultState.OnSuccess<*> -> {
                         mutableState.value = MainScreenState.Characters(
-                            it.data as List<Character>,
+                            (it.data as List<Character>).take(charactersOnScreen),
                             isNetworkError = false,
                             isSearchEmpty = false,
-                            isLoading = false
+                            isLoading = false,
+                            isLoadMoreButtonVisible = charactersOnScreen < it.data.size
                         )
                     }
                     is ApiResultState.OnFailure -> {
@@ -75,10 +78,11 @@ class MainScreenModel(val repository: RickAndMortyRepository) :
                 when (it) {
                     is ApiResultState.OnSuccess<*> -> {
                         mutableState.value = MainScreenState.Locations(
-                            it.data as List<Location>,
+                            (it.data as List<Location>).take(locationsOnScreen),
                             isNetworkError = false,
                             isSearchEmpty = false,
-                            isLoading = false
+                            isLoading = false,
+                            isLoadMoreButtonVisible = locationsOnScreen < it.data.size
                         )
                     }
 
@@ -115,10 +119,11 @@ class MainScreenModel(val repository: RickAndMortyRepository) :
                 when (it) {
                     is ApiResultState.OnSuccess<*> -> {
                         mutableState.value = MainScreenState.Episodes(
-                            it.data as List<Episode>,
+                            (it.data as List<Episode>).take(episodesOnScreen),
                             isNetworkError = false,
                             isSearchEmpty = false,
-                            isLoading = false
+                            isLoading = false,
+                            isLoadMoreButtonVisible = episodesOnScreen < it.data.size
                         )
                     }
 
@@ -136,67 +141,138 @@ class MainScreenModel(val repository: RickAndMortyRepository) :
 
     fun changeToCharactersContent() {
         screenModelScope.launch {
-            if (repository.getCharacters().isEmpty()) {
+            val characters = repository.getCharacters()
+            if (characters.isEmpty()) {
                 fetchCharactersData()
             } else
                 mutableState.value = MainScreenState.Characters(
-                    repository.getCharacters(),
+                    characters.take(charactersOnScreen),
                     false,
                     false,
+                    isLoadMoreButtonVisible = charactersOnScreen < characters.size
                 )
         }
     }
 
     fun changeToLocationsContent() {
         screenModelScope.launch {
-            if (repository.getLocations().isEmpty()) {
+            val locations = repository.getLocations()
+            if (locations.isEmpty()) {
                 fetchLocationsData()
             } else
                 mutableState.value = MainScreenState.Locations(
-                    repository.getLocations(),
+                    locations.take(locationsOnScreen),
                     false,
                     false,
+                    isLoadMoreButtonVisible = locationsOnScreen < locations.size
                 )
         }
     }
 
     fun changeToEpisodesContent() {
         screenModelScope.launch {
-            if (repository.getEpisodes().isEmpty()) {
+            val episodes = repository.getEpisodes()
+            if (episodes.isEmpty()) {
                 fetchEpisodesData()
             } else
                 mutableState.value = MainScreenState.Episodes(
-                    repository.getEpisodes(),
+                    episodes.take(episodesOnScreen),
                     false,
                     false,
+                    isLoadMoreButtonVisible = episodesOnScreen < episodes.size
                 )
         }
     }
 
+    fun searchCharacters(name: String) {
+        if (name.isNotEmpty()) {
+            screenModelScope.launch {
+                val characters = repository.getCharactersByName(name)
+                if (characters.isEmpty()) {
+                    mutableState.value = MainScreenState.Characters(
+                        listOf(),
+                        false,
+                        true,
+                    )
+                }
+            }
+        } else {
+            screenModelScope.launch {
+                mutableState.value = MainScreenState.Characters(
+                    repository.getCharacters(),
+                    false,
+                    false,
+                    isLoadMoreButtonVisible = false
+                )
+            }
+        }
+    }
+
+    fun searchEpisodes(name: String) {
+        if (name.isNotEmpty()) {
+            screenModelScope.launch {
+                val episodes = repository.getEpisodesByName(name)
+                if (episodes.isEmpty()) {
+                    mutableState.value = MainScreenState.Episodes(
+                        listOf(),
+                        false,
+                        true,
+                    )
+                }
+            }
+        } else {
+            screenModelScope.launch {
+                mutableState.value = MainScreenState.Episodes(
+                    repository.getEpisodes(),
+                    false,
+                    false,
+                    isLoadMoreButtonVisible = false
+                )
+            }
+        }
+    }
+
+    fun searchLocations(name: String) {
+        if (name.isNotEmpty()) {
+            screenModelScope.launch {
+                val locations = repository.getLocationsByName(name)
+                if (locations.isEmpty()) {
+                    mutableState.value = MainScreenState.Locations(
+                        listOf(),
+                        false,
+                        true,
+                    )
+                }
+            }
+        } else {
+            screenModelScope.launch {
+                mutableState.value = MainScreenState.Locations(
+                    repository.getLocations(),
+                    false,
+                    false,
+                    isLoadMoreButtonVisible = false
+                )
+            }
+        }
+    }
+
+    fun loadMoreCharacters() {
+        charactersOnScreen += 1
+        val characters = repository.getCharacters()
+        mutableState.value = MainScreenState.Characters(
+            characters.take(charactersOnScreen),
+            false,
+            false,
+            isLoadMoreButtonVisible = charactersOnScreen < characters.size
+        )
+    }
+
+    fun loadMoreLocations() {
+        locationsOnScreen += 8
+    }
+
+    fun loadMoreEpisodes() {
+        episodesOnScreen += 8
+    }
+
 }
-
-
-//        mutableState.value = MainScreenState.Characters(
-//            listOf(Character(
-//                id = 8377,
-//                name = "Aurelia McKenzie",
-//                status = "null",
-//                species = "docendi",
-//                type = "null",
-//                gender = "null",
-//                origin = SimpleLocation(
-//                    name = "Vilma Watts",
-//                    url = "http://www.bing.com/search?q=egestas"
-//                ),
-//                location = SimpleLocation(
-//                    name = "Richard Salas",
-//                    url = "https://search.yahoo.com/search?p=dicant"
-//                ),
-//                image = "detracto",
-//                episodes = listOf(),
-//                url = "null"
-//            )),
-//            isNetworkError = false,
-//            isSearchEmpty = false,
-//            //isLoading = true
-//        )

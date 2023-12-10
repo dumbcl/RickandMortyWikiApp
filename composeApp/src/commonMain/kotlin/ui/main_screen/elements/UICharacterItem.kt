@@ -76,4 +76,5 @@ fun UICharacterItem(name: String, species: String, image: String = "", onClick: 
             Spacer(modifier = Modifier.height(15.dp))
         }
     }
+    Spacer(modifier = Modifier.height(30.dp))
 }

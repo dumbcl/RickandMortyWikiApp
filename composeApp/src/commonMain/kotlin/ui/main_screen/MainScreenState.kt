@@ -13,18 +13,21 @@ sealed class MainScreenState {
         var isNetworkError: Boolean,
         var isSearchEmpty: Boolean,
         var isLoading: Boolean = false,
+        var isLoadMoreButtonVisible: Boolean = true,
     ): MainScreenState()
     data class Episodes(
         var episodes: List<Episode>,
         var isNetworkError: Boolean,
         var isSearchEmpty: Boolean,
         var isLoading: Boolean = false,
+        var isLoadMoreButtonVisible: Boolean = true,
     ): MainScreenState()
     data class Locations(
         var locations: List<Location>,
         var isNetworkError: Boolean,
         var isSearchEmpty: Boolean,
         var isLoading: Boolean = false,
+        var isLoadMoreButtonVisible: Boolean = true,
     ): MainScreenState()
 
 }
