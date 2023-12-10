@@ -1,0 +1,4 @@
+org.example.project.test.composeApp-androidTest-0 /Users/dumbcl/AndroidStudioProjects/RickandMortyWikiApp/composeApp/build/generated/res/resValues/androidTest/debug
+org.example.project.test.composeApp-mergeDebugAndroidTestResources-1 /Users/dumbcl/AndroidStudioProjects/RickandMortyWikiApp/composeApp/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+org.example.project.test.composeApp-mergeDebugAndroidTestResources-2 /Users/dumbcl/AndroidStudioProjects/RickandMortyWikiApp/composeApp/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+org.example.project.test.composeApp-merged_res-3 /Users/dumbcl/AndroidStudioProjects/RickandMortyWikiApp/composeApp/build/intermediates/merged_res/debugAndroidTest
