@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,27 +17,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -59,17 +53,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.Popup
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.sun.tools.javac.Main
-import data.Location
 import data.Character
 import data.Episode
+import data.Location
 import getPlatform
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -392,12 +384,51 @@ class MainScreen(val contentType: ContentType) : Screen {
                                 ) {
                                 items(items = itemsOnScreen) { item ->
                                     when (item) {
-                                        is Character -> UICharacterItem(name = item.name, species = item.species, image = item.image, onClick = { navigator.push(CharacterScreen(1)) })
-                                        is Location -> UILocationItem(name = item.name, type = item.type, onClick = { navigator.push(LocationScreen(1)) })
-                                        is Episode -> UIEpisodeItem(name = item.name, date = item.airDate, code = item.code, onClick = { navigator.push(EpisodeScreen(1)) })
+                                        is Character -> UICharacterItem(
+                                            name = item.name,
+                                            species = item.species,
+                                            image = item.image,
+                                            onClick = { navigator.push(CharacterScreen(1)) })
+
+                                        is Location -> UILocationItem(
+                                            name = item.name,
+                                            type = item.type,
+                                            onClick = { navigator.push(LocationScreen(1)) })
+
+                                        is Episode -> UIEpisodeItem(
+                                            name = item.name,
+                                            date = item.airDate,
+                                            code = item.code,
+                                            onClick = { navigator.push(EpisodeScreen(1)) })
                                     }
                                 }
-                                if (isLoadMoreVisible) item{LoadMoreButton({ mainScreenModel.loadMoreCharacters() })}
+                                if (isLoadMoreVisible) item {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ){
+                                        Spacer(modifier = Modifier.height(30.dp))
+                                        LoadMoreButton {
+                                            when (contentType) {
+                                                ContentType.CHARACTERS -> {
+                                                    mainScreenModel.loadMoreCharacters()
+                                                }
+
+                                                ContentType.DEFAULT -> {
+                                                    mainScreenModel.loadMoreCharacters()
+                                                }
+
+                                                ContentType.LOCATIONS -> {
+                                                    mainScreenModel.loadMoreLocations()
+                                                }
+
+                                                ContentType.EPISODES -> {
+                                                    mainScreenModel.loadMoreEpisodes()
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
 

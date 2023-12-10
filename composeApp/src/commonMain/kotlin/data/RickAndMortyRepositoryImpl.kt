@@ -14,11 +14,8 @@ class RickAndMortyRepositoryImpl(
     private val apiRepository: ApiRepository
 ): RickAndMortyRepository {
     private val characters: MutableList<Character> = mutableListOf()
-    private val charactersFlow: MutableStateFlow<List<Character>> = MutableStateFlow(mutableListOf())
     private val locations: MutableList<Location> = mutableListOf()
-    private val locationsFlow: MutableStateFlow<List<Location>> = MutableStateFlow(mutableListOf())
     private val episodes: MutableList<Episode> = mutableListOf()
-    private val episodesFlow: MutableStateFlow<List<Episode>> = MutableStateFlow(mutableListOf())
 
 
     override suspend fun loadCharacters() = flow {
@@ -74,34 +71,14 @@ class RickAndMortyRepositoryImpl(
 
     private fun setCharacters(loadedCharacters: List<Character>) {
         characters.addAll(loadedCharacters)
-        updateCharactersFlow()
-    }
-
-    private fun updateCharactersFlow() {
-        charactersFlow.update {
-            characters.toList()
-        }
     }
 
     private fun setLocations(loadedLocations: List<Location>) {
         locations.addAll(loadedLocations)
-        updateLocationsFlow()
-    }
-
-    private fun updateLocationsFlow() {
-        locationsFlow.update {
-            locations.toList()
-        }
     }
 
     private fun setEpisodes(loadedEpisodes: List<Episode>) {
         episodes.addAll(loadedEpisodes)
-        updateEpisodesFlow()
     }
 
-    private fun updateEpisodesFlow() {
-        episodesFlow.update {
-            episodes.toList()
-        }
-    }
 }
