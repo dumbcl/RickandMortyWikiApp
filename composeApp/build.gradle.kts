@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -51,6 +52,11 @@ kotlin {
             implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3")
             implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
+            implementation("io.ktor:ktor-client-core:2.3.2")
+            implementation("io.ktor:ktor-client-content-negotiation:2.3.2")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.2")
+            implementation("io.ktor:ktor-client-logging:2.3.2")
+            implementation("io.ktor:ktor-client-okhttp:2.3.2")
 
         }
     }

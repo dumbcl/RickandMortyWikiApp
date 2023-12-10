@@ -13,9 +13,9 @@ import kotlinx.coroutines.launch
 
 class MainScreenModel(val repository: RickAndMortyRepository) :
     StateScreenModel<MainScreenState>(MainScreenState.Init) {
-    var charactersOnScreen = 1
-    var locationsOnScreen = 1
-    var episodesOnScreen = 1
+    var charactersOnScreen = 8
+    var locationsOnScreen = 8
+    var episodesOnScreen = 8
 
     suspend fun fetchCharactersData() {
         repository.loadCharacters().onStart {
@@ -257,7 +257,7 @@ class MainScreenModel(val repository: RickAndMortyRepository) :
     }
 
     fun loadMoreCharacters() {
-        charactersOnScreen += 1
+        charactersOnScreen += 8
         val characters = repository.getCharacters()
         mutableState.value = MainScreenState.Characters(
             characters.take(charactersOnScreen),
