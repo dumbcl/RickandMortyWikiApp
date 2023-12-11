@@ -28,7 +28,6 @@ import androidx.compose.runtime.currentCompositeKeyHash
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,6 +38,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import data.Character
+import data.util.httpsStringToId
 import getPlatform
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -46,10 +46,11 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.ErrorStub
 import ui.LoadingStub
-import ui.NetworkStub
 import ui.Palette
 import ui.TwoPartedText
+import ui.episode_screen.EpisodeScreen
 import ui.getScreenModel
+import ui.location_screen.LocationScreen
 import ui.main_screen.elements.ContentType
 import ui.main_screen.elements.MainScreen
 
@@ -213,6 +214,7 @@ class CharacterScreen(val id: Int) : Screen {
                             textSize,
                             secondColor = Palette.DetailsTextColor,
                             isClickable = true,
+                            onClick = { navigator.push(LocationScreen(character.origin.url.httpsStringToId())) }
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         TwoPartedText(
@@ -222,6 +224,7 @@ class CharacterScreen(val id: Int) : Screen {
                             textSize,
                             secondColor = Palette.DetailsTextColor,
                             isClickable = true,
+                            onClick = { navigator.push(LocationScreen(character.location.url.httpsStringToId())) }
                         )
                     } else {
                         Row {
@@ -271,7 +274,7 @@ class CharacterScreen(val id: Int) : Screen {
                                     "Species: ",
                                     character.species,
                                     textSize.unaryMinus().unaryMinus(),
-                                    textSize
+                                    textSize,
                                 )
                                 Spacer(modifier = Modifier.height(5.dp))
                                 TwoPartedText(
@@ -286,8 +289,9 @@ class CharacterScreen(val id: Int) : Screen {
                                     character.origin.name,
                                     textSize.unaryMinus().unaryMinus(),
                                     textSize,
-                                    secondColor = Palette.DetailsTextColor,
+                                    secondColor = if (character.origin.name != "unknown") Palette.DetailsTextColor else Palette.GeneralTextColor,
                                     isClickable = true,
+                                    onClick = { navigator.push(LocationScreen(character.origin.url.httpsStringToId())) }
                                 )
                                 Spacer(modifier = Modifier.height(5.dp))
                                 TwoPartedText(
@@ -297,6 +301,7 @@ class CharacterScreen(val id: Int) : Screen {
                                     textSize,
                                     secondColor = Palette.DetailsTextColor,
                                     isClickable = true,
+                                    onClick = { navigator.push(LocationScreen(character.location.url.httpsStringToId())) }
                                 )
                             }
                         }
@@ -313,15 +318,18 @@ class CharacterScreen(val id: Int) : Screen {
                     )
                     for (episode in character!!.episodes) {
                         Spacer(modifier = Modifier.height(10.dp))
+                        val episodeElement = episode.split("_")
+                        val episodeName = episodeElement[0]
+                        val episodeId = episodeElement[1]
                         Text(
-                            text = episode,
+                            text = episodeName,
                             color = Palette.DetailsTextColor,
                             style = TextStyle(
                                 color = Palette.DetailsTextColor,
                                 fontSize = textSize,
                                 fontWeight = FontWeight(500),
                             ),
-                            modifier = Modifier.clickable { }
+                            modifier = Modifier.clickable { navigator.push(EpisodeScreen(episodeId.toInt())) }
                         )
                     }
                 }

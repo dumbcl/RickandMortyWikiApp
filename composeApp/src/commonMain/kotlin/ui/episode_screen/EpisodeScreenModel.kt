@@ -5,6 +5,7 @@ import data.Character
 import data.Episode
 import data.RickAndMortyRepository
 import data.SimpleLocation
+import data.util.httpsStringToId
 import ui.character_screen.CharacterScreenState
 import ui.location_screen.LocationScreenState
 
@@ -17,7 +18,7 @@ class EpisodeScreenModel(val repository: RickAndMortyRepository) : StateScreenMo
             mutableState.value = EpisodeScreenState.Error
         } else {
             mutableState.value = EpisodeScreenState.EpisodeContent(
-                episode = episode
+                episode = episode.copy(characters = episode.characters.map { repository.getCharacter(it.httpsStringToId())?.name.toString() + "_" + it.httpsStringToId().toString()})
             )
         }
     }

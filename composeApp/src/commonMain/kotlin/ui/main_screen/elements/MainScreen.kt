@@ -264,7 +264,14 @@ class MainScreen(val contentType: ContentType) : Screen {
                     LoadingStub()
                 }
                 else if (isNetworkError) {
-                    NetworkStub()
+                    NetworkStub {
+                        when (contentType) {
+                            ContentType.CHARACTERS -> scope.launch { mainScreenModel.fetchCharactersData() }
+                            ContentType.LOCATIONS -> scope.launch { mainScreenModel.fetchLocationsData() }
+                            ContentType.EPISODES -> scope.launch { mainScreenModel.fetchEpisodesData() }
+                            ContentType.DEFAULT -> scope.launch { mainScreenModel.fetchCharactersData() }
+                        }
+                    }
                 } else {
 
                     Spacer(modifier = Modifier.height(45.dp))

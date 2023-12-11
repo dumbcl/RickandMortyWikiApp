@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import data.Character
 import data.RickAndMortyRepository
 import data.SimpleLocation
+import data.util.httpsStringToId
 import ui.episode_screen.EpisodeScreenState
 
 class CharacterScreenModel(val repository: RickAndMortyRepository) : StateScreenModel<CharacterScreenState>(CharacterScreenState.Init) {
@@ -15,7 +16,7 @@ class CharacterScreenModel(val repository: RickAndMortyRepository) : StateScreen
             mutableState.value = CharacterScreenState.Error
         } else {
             mutableState.value = CharacterScreenState.CharacterContent(
-                character = character
+                character = character.copy(episodes = character.episodes.map { repository.getEpisode(it.httpsStringToId())?.name.toString() + "_" + it.httpsStringToId().toString()})
             )
         }
     }

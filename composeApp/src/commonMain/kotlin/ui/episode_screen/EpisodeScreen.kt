@@ -35,6 +35,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import data.Episode
+import data.util.httpsStringToId
 import getPlatform
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -43,6 +44,7 @@ import ui.LoadingStub
 import ui.NetworkStub
 import ui.Palette
 import ui.TwoPartedText
+import ui.character_screen.CharacterScreen
 import ui.getScreenModel
 import ui.main_screen.elements.ContentType
 import ui.main_screen.elements.MainScreen
@@ -174,15 +176,18 @@ class EpisodeScreen(val id: Int) : Screen {
                     )
                     for (character in episode.characters) {
                         Spacer(modifier = Modifier.height(10.dp))
+                        val characterElement = character.split("_")
+                        val characterName = characterElement[0]
+                        val characterId = characterElement[1]
                         Text(
-                            text = character,
+                            text = characterName,
                             color = Palette.DetailsTextColor,
                             style = TextStyle(
                                 color = Palette.DetailsTextColor,
                                 fontSize = textSize,
                                 fontWeight = FontWeight(500),
                             ),
-                            modifier = Modifier.clickable { }
+                            modifier = Modifier.clickable { navigator.push(CharacterScreen(characterId.toInt())) }
                         )
                     }
                 }

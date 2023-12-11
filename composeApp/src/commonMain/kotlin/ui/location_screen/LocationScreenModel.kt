@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import data.Episode
 import data.Location
 import data.RickAndMortyRepository
+import data.util.httpsStringToId
 import ui.episode_screen.EpisodeScreenState
 
 class LocationScreenModel(val repository: RickAndMortyRepository) : StateScreenModel<LocationScreenState>(LocationScreenState.Init) {
@@ -15,7 +16,7 @@ class LocationScreenModel(val repository: RickAndMortyRepository) : StateScreenM
             mutableState.value = LocationScreenState.Error
         } else {
             mutableState.value = LocationScreenState.LocationContent(
-                location = location
+                location = location.copy(residents = location.residents.map { repository.getCharacter(it.httpsStringToId())?.name.toString() + "_" + it.httpsStringToId().toString()})
             )
         }
     }

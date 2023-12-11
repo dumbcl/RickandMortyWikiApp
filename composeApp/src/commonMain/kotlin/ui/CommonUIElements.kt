@@ -29,7 +29,8 @@ fun TwoPartedText(
     secondSize: TextUnit,
     firstColor: Color = Palette.GeneralTextColor,
     secondColor: Color = Palette.GeneralTextColor,
-    isClickable: Boolean = false
+    isClickable: Boolean = false,
+    onClick: () -> Unit = {},
 ) {
     Row {
         Text(
@@ -41,7 +42,7 @@ fun TwoPartedText(
                 fontWeight = FontWeight(700),
             ),
         )
-        if (isClickable)
+        if (!isClickable)
             Text(
                 text = secondPart,
                 color = secondColor,
@@ -60,13 +61,15 @@ fun TwoPartedText(
                     fontSize = secondSize,
                     fontWeight = FontWeight(500),
                 ),
-                modifier = Modifier.clickable { },
+                modifier = Modifier.clickable(enabled = true, onClick = onClick),
             )
     }
 }
 
 @Composable
-fun NetworkStub() {
+fun NetworkStub(
+    onClick: () -> Unit
+) {
     Spacer(modifier = Modifier.height(40.dp))
     Text(
         text = "Internet problems\nClick to refresh",
@@ -79,7 +82,7 @@ fun NetworkStub() {
     )
     Spacer(modifier = Modifier.height(10.dp))
     IconButton(
-        onClick = { /*TODO*/ },
+        onClick = onClick,
     ) {
         Icon(
             Icons.Default.Refresh,
