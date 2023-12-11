@@ -8,6 +8,7 @@ import data.Location
 import data.RickAndMortyRepository
 import data.network.ApiResultState
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
@@ -17,6 +18,105 @@ class MainScreenModel(val repository: RickAndMortyRepository) :
     var locationsOnScreen = 8
     var episodesOnScreen = 8
 
+    suspend fun fetchAllData() {
+        repository.loadEpisodes().onStart {
+            mutableState.value = MainScreenState.Characters(
+                listOf(),
+                isNetworkError = false,
+                isSearchEmpty = false,
+                isLoading = true
+            )
+        }
+            .catch {
+                mutableState.value = MainScreenState.Characters(
+                    listOf(),
+                    isNetworkError = true,
+                    isSearchEmpty = false,
+                    isLoading = false
+                )
+            }
+            .collect{
+                when (it) {
+                    is ApiResultState.OnSuccess<*> -> {
+                        repository.loadLocations().onStart {
+                            mutableState.value = MainScreenState.Characters(
+                                listOf(),
+                                isNetworkError = false,
+                                isSearchEmpty = false,
+                                isLoading = true
+                            )
+                        }
+                            .catch {
+                                mutableState.value = MainScreenState.Characters(
+                                    listOf(),
+                                    isNetworkError = true,
+                                    isSearchEmpty = false,
+                                    isLoading = false
+                                )
+                            }
+                            .collect {
+                                when (it) {
+                                    is ApiResultState.OnSuccess<*> -> {
+                                        repository.loadCharacters().onStart {
+                                            mutableState.value = MainScreenState.Characters(
+                                                listOf(),
+                                                isNetworkError = false,
+                                                isSearchEmpty = false,
+                                                isLoading = true
+                                            )
+                                        }
+                                            .catch {
+                                                mutableState.value = MainScreenState.Characters(
+                                                    listOf(),
+                                                    isNetworkError = true,
+                                                    isSearchEmpty = false,
+                                                    isLoading = false
+                                                )
+                                            }
+                                            .collect {
+                                                when (it) {
+                                                    is ApiResultState.OnSuccess<*> -> {
+                                                        mutableState.value = MainScreenState.Characters(
+                                                            (it.data as List<Character>).take(charactersOnScreen),
+                                                            isNetworkError = false,
+                                                            isSearchEmpty = false,
+                                                            isLoading = false,
+                                                            isLoadMoreButtonVisible = charactersOnScreen < it.data.size
+                                                        )
+                                                    }
+                                                    is ApiResultState.OnFailure -> {
+                                                        mutableState.value = MainScreenState.Characters(
+                                                            listOf(),
+                                                            isNetworkError = true,
+                                                            isSearchEmpty = false,
+                                                            isLoading = false
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                    }
+                                    is ApiResultState.OnFailure -> {
+                                        mutableState.value = MainScreenState.Characters(
+                                            listOf(),
+                                            isNetworkError = true,
+                                            isSearchEmpty = false,
+                                            isLoading = false
+                                        )
+                                    }
+                                }
+                            }
+                    }
+                    is ApiResultState.OnFailure -> {
+                        mutableState.value = MainScreenState.Characters(
+                            listOf(),
+                            isNetworkError = true,
+                            isSearchEmpty = false,
+                            isLoading = false
+                        )
+                    }
+                }
+            }
+    }
     suspend fun fetchCharactersData() {
         repository.loadCharacters().onStart {
             mutableState.value = MainScreenState.Characters(

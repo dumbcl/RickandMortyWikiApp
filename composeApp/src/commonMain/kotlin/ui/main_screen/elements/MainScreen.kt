@@ -93,7 +93,7 @@ class MainScreen(val contentType: ContentType) : Screen {
 
         if (contentType == ContentType.DEFAULT) {
             LaunchedEffect(currentCompositeKeyHash) {
-                mainScreenModel.fetchCharactersData()
+                mainScreenModel.fetchAllData()
             }
         }
 
